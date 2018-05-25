@@ -67,7 +67,7 @@ exec(char *path, char **argv)
 //    goto bad;
 //  clearpteu(pgdir, (char*)(sz - 2*PGSIZE));
 // sp = sz;
-    if((sz = allocuvm(pgdir, PGROUNDDOWN(KERNBASE -1), PGROUNDDOWN(KERNBASE - 1) - 1)) == 0 ) //cs153
+    if((sp = allocuvm(pgdir, KERNBASE -1-PGSIZE, KERNBASE - 1)) == 0 ) //cs153
 	goto bad;
     sp = KERNBASE - 1;//cs153
 
@@ -103,6 +103,7 @@ exec(char *path, char **argv)
   curproc->sz = sz;
   curproc->tf->eip = elf.entry;  // main
   curproc->tf->esp = sp;
+  curproc->page = 1; //initialize pages in each process
   switchuvm(curproc);
   freevm(oldpgdir);
   return 0;

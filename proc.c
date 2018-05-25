@@ -199,7 +199,7 @@ fork(void)
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
-
+  np->page = curproc->page; //cs 153 copy the # of pages from parent to child process. 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
 
