@@ -338,13 +338,13 @@ copyuvm(pde_t *pgdir, uint sz)
  for(i = PGROUNDUP(KERNBASE - 1 - (curproc->page*PGSIZE)); i < KERNBASE-1; i += PGSIZE){ //cs153
 	if((pte = walkpgdir(pgdir, (void *)i, 0)) == 0)
 	  panic("copyuvm: pte should exist");
-	if(!(*pte & PTE P))
+	if(!(*pte & PTE_P))
 	 panic("copyuvm: page not present");
 	pa = PTE_ADDR(*pte);
 	flags = PTE_FLAGS(*pte);
 	if((mem = kalloc()) == 0)
 	 goto bad;
-	memmove(mem, (char*(P2V(pa), PGSIZE);
+	memmove(mem, (char*)P2V(pa), PGSIZE);
 	if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
 	  goto bad;
 }

@@ -85,7 +85,7 @@ trap(struct trapframe *tf)
 	  int bottom_of_next_page = PGROUNDDOWN(stack_Top - 1);
 
 	  cprintf("Address of page fault: %x\n", PGFLT_addr);
-	  cprintf("current stack size: %x\n", curpoc->page);
+	  cprintf("current stack size: %x\n", curproc->page);
 	  cprintf("KERNBASE: %x\n",KERNBASE);
 	  cprintf("current top of stack: %x\n", stack_Top);
 	  cprintf("bottom of next page: %x\n", bottom_of_next_page);
@@ -94,7 +94,7 @@ trap(struct trapframe *tf)
 		if(allocuvm(curproc->pgdir, PGROUNDDOWN(PGFLT_addr), PGROUNDDOWN(PGFLT_addr) + 1) == 0){
 		  cprintf("allocation error");	
 	  	}
-		p->page += 1;
+		curproc->page += 1;
 		}
 	  else{
 	  	panic("stack grew into heap");
