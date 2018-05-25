@@ -77,7 +77,30 @@ trap(struct trapframe *tf)
             cpuid(), tf->cs, tf->eip);
     lapiceoi();
     break;
+  case T_PGFLT: //cs153
+	{
+	  struct proc *curproc = myproc();
+	  int PGFLT_addr = rcr2();
+	  int stack_Top = KERNBASE - (PGSIZE * curproc->page);
+	  int bottom_of_next_page = PGROUNDDOWN(stack_Top - 1);
 
+	  cprintf("Address of page fault: %x\n", PGFLT_addr);
+	  cprintf("current stack size: %x\n", curpoc->page);
+	  cprintf("KERNBASE: %x\n",KERNBASE);
+	  cprintf("current top of stack: %x\n", stack_Top);
+	  cprintf("bottom of next page: %x\n", bottom_of_next_page);
+ 
+	  if((PGFLT_addr < stack_Top) && (PGFLT_addr > curproc->sz) && (PGFLT_addr > bottom_of_next_page)){
+		if(allocuvm(curproc->pgdir, PGROUNDDOWN(PGFLT_addr), PGROUNDDOWN(PGFLT_addr) + 1) == 0){
+		  cprintf("allocation error");	
+	  	}
+		p->page += 1;
+		}
+	  else{
+	  	panic("stack grew into heap");
+	  }
+	 break;
+	}
   //PAGEBREAK: 13
   default:
     if(myproc() == 0 || (tf->cs&3) == 0){
