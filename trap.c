@@ -91,10 +91,12 @@ trap(struct trapframe *tf)
 	  cprintf("bottom of next page: %x\n", bottom_of_next_page);
  
 	  if((PGFLT_addr < stack_Top) && (PGFLT_addr > curproc->sz) && (PGFLT_addr > bottom_of_next_page)){
+		cprintf("0\n");
 		if(allocuvm(curproc->pgdir, PGROUNDDOWN(PGFLT_addr), stack_Top) == 0){
 		  cprintf("allocation error");	
 	  	}
 		curproc->page += 1;
+		 cprintf("page addedi\n");
 		}
 	  else{
 	  	panic("stack grew into heap");
